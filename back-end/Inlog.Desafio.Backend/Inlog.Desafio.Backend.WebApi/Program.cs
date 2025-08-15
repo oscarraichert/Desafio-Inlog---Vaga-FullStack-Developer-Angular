@@ -2,7 +2,6 @@ using Inlog.Desafio.Backend.Application;
 using Inlog.Desafio.Backend.Infra.Database.Repositories;
 using Inlog.Desafio.Backend.Infra.Database.Shared;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,10 +14,16 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<VeiculoRepository>();
 builder.Services.AddScoped<VeiculoService>();
 
-var connectionString = builder.Configuration.GetConnectionString("LocalDatabase");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
 var app = builder.Build();
+
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(origin => true)
+    .AllowCredentials());
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
