@@ -1,3 +1,9 @@
+using Inlog.Desafio.Backend.Application;
+using Inlog.Desafio.Backend.Infra.Database.Repositories;
+using Inlog.Desafio.Backend.Infra.Database.Shared;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +12,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<VeiculoRepository>();
+builder.Services.AddScoped<VeiculoService>();
+
+var connectionString = builder.Configuration.GetConnectionString("LocalDatabase");
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
 var app = builder.Build();
 
