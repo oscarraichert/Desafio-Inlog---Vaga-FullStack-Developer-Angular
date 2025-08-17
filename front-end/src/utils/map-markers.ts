@@ -22,6 +22,7 @@ export class MapMarkers {
         iconSize: [41, 41],
         iconAnchor: [20, 20],
         popupAnchor: [1, -20],
+        shadowSize: [41, 41]
     });
 
     static truckIcon = L.icon({
@@ -29,6 +30,7 @@ export class MapMarkers {
         iconSize: [41, 41],
         iconAnchor: [20, 20],
         popupAnchor: [1, -20],
+        shadowSize: [41, 41]
     });
 
     static fromVehicleType(type: VehicleType): L.Icon {

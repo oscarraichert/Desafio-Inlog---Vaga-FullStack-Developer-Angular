@@ -11,4 +11,8 @@ export class VehicleService {
     public getAll(): Observable<Vehicle[]> {
         return this.http.get<Vehicle[]>(ApiRoutes.listVehicles);
     }
+
+    public addVehicle(vehicle: Vehicle): Observable<Vehicle> {
+        return this.http.post<Vehicle>(ApiRoutes.addVehicle, vehicle);
+    }
 }

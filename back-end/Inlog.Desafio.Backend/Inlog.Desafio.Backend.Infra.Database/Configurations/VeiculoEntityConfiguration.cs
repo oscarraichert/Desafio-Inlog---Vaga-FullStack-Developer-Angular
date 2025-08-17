@@ -12,7 +12,7 @@ namespace Inlog.Desafio.Backend.Infra.Database.Configurations
             builder.HasIndex(x => x.Chassi).IsUnique();
             builder.Property(x => x.TipoVeiculo).IsRequired();
             builder.Property(x => x.Cor).IsRequired();
-            builder.Property(x => x.ImageBytes).HasColumnType("bytea").IsRequired(false);
+            builder.Property(x => x.ImageUrl).IsRequired(false);
             builder.HasIndex(x => x.Placa).IsUnique();
             builder.Property(x => x.Latitude).IsRequired();
             builder.Property(x => x.Longitude).IsRequired();

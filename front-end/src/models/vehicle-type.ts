@@ -1,4 +1,4 @@
 export enum VehicleType {
-  Onibus,
-  Caminhao,
+  Onibus = 1,
+  Caminhao = 2,
 }

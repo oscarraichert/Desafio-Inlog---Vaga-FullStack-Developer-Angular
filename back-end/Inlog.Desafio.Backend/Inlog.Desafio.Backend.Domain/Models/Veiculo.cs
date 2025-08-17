@@ -9,5 +9,5 @@ public class Veiculo
     public string Placa { get; set; }
     public double Latitude { get; set; }
     public double Longitude { get; set; }
-    public byte[]? ImageBytes { get; set; }
+    public string? ImageUrl { get; set; }
 }

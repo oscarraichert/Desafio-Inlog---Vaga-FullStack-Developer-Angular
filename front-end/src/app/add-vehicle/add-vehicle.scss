@@ -1,0 +1,14 @@
+#add-vehicle-layout {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    color: #fff;
+    font-family: Roboto, Arial, sans-serif;
+    min-height: 100vh;
+
+    img {
+        border-radius: 8px;
+        margin-top: 8px;
+        border: 1px solid #444;
+    }
+}

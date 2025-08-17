@@ -8,7 +8,8 @@ export class Vehicle {
   placa: string;
   latitude: number;
   longitude: number;
-  imageBytes?: Uint8Array;
+  imageBase64?: string;
+  imageUrl?: string;
 
   constructor(
     id: number,
@@ -18,7 +19,8 @@ export class Vehicle {
     placa: string,
     latitude: number,
     longitude: number,
-    imageBytes?: Uint8Array
+    imageBase64?: string,
+    imageUrl?: string
   ) {
     this.id = id;
     this.chassi = chassi;
@@ -27,6 +29,7 @@ export class Vehicle {
     this.placa = placa;
     this.latitude = latitude;
     this.longitude = longitude;
-    this.imageBytes = imageBytes;
+    this.imageBase64 = imageBase64;
+    this.imageUrl = imageUrl;
   }
 }

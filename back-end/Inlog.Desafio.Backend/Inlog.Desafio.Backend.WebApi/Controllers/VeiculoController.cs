@@ -13,10 +13,15 @@ public class VeiculoController : ControllerBase
 
     private readonly ILogger<VeiculoController> _logger;
 
-    public VeiculoController(ILogger<VeiculoController> logger, VeiculoService service)
+    private readonly IWebHostEnvironment _env;
+
+    public VeiculoController(ILogger<VeiculoController> logger, VeiculoService service, IWebHostEnvironment env)
     {
         _logger = logger;
         _service = service;
+        _env = env;
+        _env.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+
     }
 
     [HttpPost("Cadastrar")]
@@ -24,7 +29,9 @@ public class VeiculoController : ControllerBase
     {
         try
         {
-            await _service.AddVeiculo(veiculo);
+            var url = $"{Request.Scheme}://{Request.Host}/images/{veiculo.Placa}.png";
+
+            await _service.AddVeiculo(veiculo, _env.WebRootPath, url);
 
             return Ok(veiculo);
         }

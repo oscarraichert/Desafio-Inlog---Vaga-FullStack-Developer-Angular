@@ -1,1 +1,98 @@
-<p>add-vehicle works!</p>
+<div id="add-vehicle-layout">
+    <div>
+        <h1>Adicionar Veículo</h1>
+
+        <form [formGroup]="newVehicleForm" (ngSubmit)="onSubmit()">
+            <label for="type">Tipo: </label>
+            <select id="type" formControlName="type">
+                <option value="null" disabled selected>Selecione</option>
+                @for (type of vehicleTypeOptions; track type.value) {
+                <option [ngValue]="type.value">
+                    {{ type.key }}
+                </option>
+                }
+            </select>
+
+            @if (newVehicleForm.get('type')?.touched && newVehicleForm.get('type')?.invalid) {
+            <div id="formControlErrors">
+                @if (newVehicleForm.get('type')?.errors?.['required']) {
+                <small>Tipo é obrigatório</small>
+                }
+                @if (newVehicleForm.get('type')?.errors?.['invalidType']) {
+                <small>Tipo é obrigatório</small>
+                }
+            </div>
+            }
+
+            <label for="licensePlate">Placa: </label>
+            <input id="licensePlate" type="text" formControlName="licensePlate" />
+
+            @if (newVehicleForm.get('licensePlate')?.touched && newVehicleForm.get('licensePlate')?.invalid) {
+            <div id="formControlErrors">
+                @if (newVehicleForm.get('licensePlate')?.errors?.['required']) {
+                <small>Placa é obrigatória</small>
+                }
+                @if (newVehicleForm.get('licensePlate')?.errors?.['minlength']) {
+                <small>Placa muito curta</small>
+                }
+                @if (newVehicleForm.get('licensePlate')?.errors?.['pattern']) {
+                <small>Formato inválido</small>
+                }
+            </div>
+            }
+
+            <label for="color">Cor: </label>
+            <input id="color" type="text" formControlName="color" />
+
+            @if (newVehicleForm.get('color')?.touched && newVehicleForm.get('color')?.invalid) {
+            <div id="formControlErrors">
+                @if (newVehicleForm.get('color')?.errors?.['required']) {
+                <small>Cor é obrigatória</small>
+                }
+            </div>
+            }
+
+            <label for="chassis">Chassi: </label>
+            <input id="chassis" type="text" formControlName="chassis" />
+
+            @if (newVehicleForm.get('chassis')?.touched && newVehicleForm.get('chassis')?.invalid) {
+            <div id="formControlErrors">
+                @if (newVehicleForm.get('chassis')?.errors?.['required']) {
+                <small>Chassi é obrigatório</small>
+                }
+                @if (newVehicleForm.get('chassis')?.errors?.['pattern']) {
+                <small>Deve conter apenas números e caracteres maiúsculos</small>
+                }
+                @if (newVehicleForm.get('chassis')?.errors?.['minlength']) {
+                <small>Deve conter 17 caracteres</small>
+                }
+                @if (newVehicleForm.get('chassis')?.errors?.['maxlength']) {
+                <small>Deve conter 17 caracteres</small>
+                }
+            </div>
+            }
+
+            <label for="image">Escolha uma imagem:</label>
+            <input type="file" id="image" (change)="onFileSelected($event)" accept="image/*" />
+
+            @if (imagePreview) {
+            <div>
+                <p>Prévia:</p>
+                <img [src]="imagePreview" alt="preview" style="max-width: 200px; max-height: 200px;">
+            </div>
+            }
+
+            <label>Selecione a localização no mapa:</label>
+            
+            @if (showLocationError) {
+            <div id="formControlErrors">
+                <small>Localização obrigatória</small>
+            </div>
+            }
+
+            <button id="save-button" type="submit">Salvar</button>
+        </form>
+    </div>
+
+    <div id="map"></div>
+</div>
