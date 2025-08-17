@@ -1,10 +1,15 @@
-<body>
-    <h1>Veículos</h1>
-    <ul>
-        @for (v of vehicles; track v.id) {
-        <li>{{ vehicleType[v.tipoVeiculo] }} #{{ v.id }} Placa: {{ v.placa }} Cor: {{ v.cor }}</li>
-        } @empty {
-        <li>Sem veículos cadastrados.</li>
-        }
-    </ul>
-</body>
+<h1>Veículos</h1>
+
+<nav>
+    <a routerLink="/add-vehicle">Add Vehicle</a>
+</nav>
+
+<ul>
+    @for (v of vehicles; track v.id) {
+    <li>{{ vehicleType[v.tipoVeiculo] }} #{{ v.id }} Placa: {{ v.placa }} Cor: {{ v.cor }}</li>
+    } @empty {
+    <li>Sem veículos cadastrados.</li>
+    }
+</ul>
+
+<div id="map"></div>

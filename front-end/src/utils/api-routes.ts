@@ -1,5 +1,7 @@
+import { environment } from "../environments/environment";
+
 export class ApiRoutes {
-    static baseUrl = "https://localhost:7222";
+    static baseUrl = environment.apiUrl;
 
     static listVehicles = this.baseUrl + "/Veiculo/Listar";
 }
