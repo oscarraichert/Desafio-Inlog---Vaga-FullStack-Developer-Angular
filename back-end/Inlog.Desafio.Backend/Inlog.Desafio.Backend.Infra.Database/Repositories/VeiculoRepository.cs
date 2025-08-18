@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Inlog.Desafio.Backend.Infra.Database.Repositories
 {
-    public class VeiculoRepository : IRepository<Veiculo>
+    public class VeiculoRepository : IVeiculoRepository
     {
         private AppDbContext Context { get; set; }
 
@@ -14,10 +14,12 @@ namespace Inlog.Desafio.Backend.Infra.Database.Repositories
             Context = context;
         }
 
-        public async Task Insert(Veiculo veiculo)
+        public async Task<Veiculo> Insert(Veiculo veiculo)
         {
             await Context.Veiculos.AddAsync(veiculo);
             await Context.SaveChangesAsync();
+
+            return veiculo;
         }
 
         public async Task<List<Veiculo>> ReadAll()

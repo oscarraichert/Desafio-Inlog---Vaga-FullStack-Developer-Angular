@@ -10,18 +10,18 @@ namespace Inlog.Desafio.Backend.Application
 {
     public class VeiculoService
     {
-        private VeiculoRepository _repository;
+        private IVeiculoRepository _repository;
         private S3Service _s3Service;
         private IConfiguration _config;
 
-        public VeiculoService(VeiculoRepository repository, S3Service s3Service, IConfiguration config)
+        public VeiculoService(IVeiculoRepository repository, S3Service s3Service, IConfiguration config)
         {
             _config = config;
             _repository = repository;
             _s3Service = s3Service;
         }
 
-        public async Task AddVeiculo(InsertVeiculoRequest veiculoRequest)
+        public async Task<Veiculo> AddVeiculo(InsertVeiculoRequest veiculoRequest)
         {
             if (!string.IsNullOrWhiteSpace(veiculoRequest.ImageBase64))
             {
@@ -45,7 +45,7 @@ namespace Inlog.Desafio.Backend.Application
                 veiculoRequest.ImageUrl = url;
             }            
 
-            await _repository.Insert(veiculoRequest.ToModel());
+            return await _repository.Insert(veiculoRequest.ToModel());
         }
 
         public async Task<List<Veiculo>> ReadAllVeiculos()

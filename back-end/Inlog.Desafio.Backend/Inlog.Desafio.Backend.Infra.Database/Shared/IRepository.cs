@@ -1,9 +1,11 @@
 ﻿namespace Inlog.Desafio.Backend.Infra.Database.Shared
 {
-    internal interface IRepository<T>
+    public interface IRepository<T>
     {
-        public Task Insert(T model);
+        public Task<T> Insert(T model);
 
         public Task<List<T>> ReadAll();
+
+        public Task DeleteById(int id);
     }
 }

@@ -8,6 +8,11 @@ namespace Inlog.Desafio.Backend.Application
     {
         private AmazonS3Client _s3Client;
 
+        public S3Service()
+        {
+            
+        }
+
         public S3Service(IConfiguration config)
         {
             

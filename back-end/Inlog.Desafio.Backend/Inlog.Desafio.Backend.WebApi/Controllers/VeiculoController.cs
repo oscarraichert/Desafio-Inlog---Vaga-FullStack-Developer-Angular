@@ -25,9 +25,9 @@ public class VeiculoController : ControllerBase
     {
         try
         {
-            await _service.AddVeiculo(veiculo);
+            var insertedVehicle = await _service.AddVeiculo(veiculo);
 
-            return Ok(veiculo);
+            return Ok(insertedVehicle);
         }
         catch (Exception ex)
         {
