@@ -8,11 +8,12 @@ import { MapService } from '../../services/map.service';
 import { MapMarkers } from '../../utils/map-markers';
 import { GeolocationService } from '../../services/geolocation.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Navbar } from '../components/navbar/navbar';
 
 @Component({
   selector: 'app-home',
   providers: [],
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule, Navbar],
   templateUrl: './home.html',
   styleUrls: ['./home.scss']
 })

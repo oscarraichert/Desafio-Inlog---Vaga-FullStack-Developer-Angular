@@ -7,11 +7,12 @@ import * as leaflet from 'leaflet';
 import { Vehicle } from '../../models/vehicle';
 import { VehicleService } from '../../services/vehicle.service';
 import { Router } from '@angular/router';
-import { MatSnackBar, MatSnackBarConfig, MatSnackBarContainer } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Navbar } from '../components/navbar/navbar';
 
 @Component({
   selector: 'app-add-vehicle',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, Navbar],
   templateUrl: './add-vehicle.html',
   styleUrl: './add-vehicle.scss'
 })
