@@ -147,7 +147,7 @@ export class Home implements OnInit {
     let userPosition = this.geoService.userLatLng;
 
     if (userPosition != null) {
-      this.vehicles.sort((a, b) => {
+      this.filteredVehicles.sort((a, b) => {
         const aDistance = leaflet.latLng(a.latitude, a.longitude).distanceTo(userPosition);
         const bDistance = leaflet.latLng(b.latitude, b.longitude).distanceTo(userPosition);
         return aDistance - bDistance;
