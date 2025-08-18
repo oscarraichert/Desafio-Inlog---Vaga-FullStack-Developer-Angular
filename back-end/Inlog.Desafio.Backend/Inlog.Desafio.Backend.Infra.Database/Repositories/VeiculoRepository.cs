@@ -1,6 +1,7 @@
 ﻿using Inlog.Desafio.Backend.Domain.Models;
 using Inlog.Desafio.Backend.Infra.Database.Shared;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Inlog.Desafio.Backend.Infra.Database.Repositories
 {
@@ -22,6 +23,17 @@ namespace Inlog.Desafio.Backend.Infra.Database.Repositories
         public async Task<List<Veiculo>> ReadAll()
         {
             return await Context.Veiculos.ToListAsync();
+        }
+
+        public async Task DeleteById(int id)
+        {
+            var veiculo = Context.Veiculos.FirstOrDefault(v => v.Id == id);
+
+            if (veiculo != null)
+            {
+                Context.Veiculos.Remove(veiculo);
+                await Context.SaveChangesAsync();
+            }
         }
     }
 }

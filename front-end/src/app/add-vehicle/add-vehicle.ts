@@ -44,7 +44,8 @@ export class AddVehicle implements OnInit {
     type: new FormControl<number | null>(null, [Validators.required]),
     licensePlate: new FormControl('', [
       Validators.required,
-      Validators.minLength(6),
+      Validators.minLength(7),
+      Validators.maxLength(7),
       Validators.pattern('[A-Z0-9]+')
     ]),
     color: new FormControl('', [Validators.required,]),
@@ -107,6 +108,10 @@ export class AddVehicle implements OnInit {
     } else {
       this.newVehicleForm.markAllAsTouched();
     }
+  }
+
+  cancelButtonClick() {
+    this.router.navigate(['/home']);
   }
 
   onFileSelected(event: Event) {

@@ -15,4 +15,8 @@ export class VehicleService {
     public addVehicle(vehicle: Vehicle): Observable<Vehicle> {
         return this.http.post<Vehicle>(ApiRoutes.addVehicle, vehicle);
     }
+
+    public deleteById(id: number): Observable<void> {
+        return this.http.delete<void>(ApiRoutes.deleteVehicleById + id);
+    }
 }

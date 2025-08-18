@@ -35,6 +35,9 @@
                 @if (newVehicleForm.get('licensePlate')?.errors?.['minlength']) {
                 <small>Placa muito curta</small>
                 }
+                @if (newVehicleForm.get('licensePlate')?.errors?.['maxlength']) {
+                <small>Placa muito grande</small>
+                }
                 @if (newVehicleForm.get('licensePlate')?.errors?.['pattern']) {
                 <small>Formato inválido</small>
                 }
@@ -91,6 +94,7 @@
             }
 
             <button id="save-button" type="submit">Salvar</button>
+            <button id="delete-button" (click)="cancelButtonClick()">Cancelar</button>
         </form>
     </div>
 

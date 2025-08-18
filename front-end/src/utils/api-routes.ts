@@ -6,4 +6,6 @@ export class ApiRoutes {
     static listVehicles = this.baseUrl + "/Veiculo/Listar";
 
     static addVehicle = this.baseUrl + "/Veiculo/Cadastrar";
+
+    static deleteVehicleById = this.baseUrl + "/Veiculo/Delete/";
 }

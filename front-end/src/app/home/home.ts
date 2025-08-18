@@ -7,11 +7,12 @@ import { RouterLink } from '@angular/router';
 import { MapService } from '../../services/map.service';
 import { MapMarkers } from '../../utils/map-markers';
 import { GeolocationService } from '../../services/geolocation.service';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
   providers: [],
-  imports: [RouterLink],
+  imports: [RouterLink, ReactiveFormsModule],
   templateUrl: './home.html',
   styleUrls: ['./home.scss']
 })
@@ -22,6 +23,9 @@ export class Home implements OnInit {
   vehicleType = VehicleType;
   vehiclesCoords: leaflet.LatLngExpression[] = [];
   selectedVehicle: Vehicle | null = null;
+  private markers: leaflet.Marker[] = [];
+  searchControl = new FormControl('');
+  filteredVehicles: Vehicle[] = [];
 
   constructor(
     private vehicleService: VehicleService,
@@ -30,53 +34,84 @@ export class Home implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getVehiclesAndInitMap();
+    this.map = this.mapService.initializeMap('map');
+    this.getVehicles();
+
+    this.searchControl.valueChanges.subscribe(search => {
+      this.filterVehicles(search);
+    });
+  }
+
+  filterVehicles(search: string | null) {
+    const s = (search || '').toLowerCase();
+    this.filteredVehicles = this.vehicles.filter(v =>
+      v.placa.toLowerCase().includes(s) ||
+      v.cor.toLowerCase().includes(s) ||
+      v.chassi.toLowerCase().includes(s) ||
+      this.vehicleType[v.tipoVeiculo].toLowerCase().includes(s)
+    );
   }
 
   selectVehicle(vehicle: Vehicle) {
     if (this.selectedVehicle === vehicle) {
-      this.selectedVehicle = null;
+      this.deselectVehicle();
     } else {
       this.selectedVehicle = vehicle;
-      console.log(this.selectedVehicle)
+      this.centerOnSelectedVehicle();
     }
   }
 
   deselectVehicle() {
     this.selectedVehicle = null;
+    this.recenterMap();
   }
 
-  private getVehiclesAndInitMap() {
+  deleteVehicle() {
+    if (this.selectedVehicle) {
+      this.vehicleService.deleteById(this.selectedVehicle.id).subscribe({
+        next: _ => {
+          this.getVehicles();
+          this.deselectVehicle();
+        },
+        error: err => console.error(err)
+      });
+    }
+  }
+
+  private getVehicles() {
     this.vehicleService.getAll().subscribe({
       next: data => {
         this.vehicles = data;
-        this.initMap();
+        this.filterVehicles(this.searchControl.value);
+        this.setMapBounds();
       },
       error: err => console.error(err)
     });
   }
 
-  private initMap() {
-    this.map = this.mapService.initializeMap('map');
-
+  private setMapBounds() {
     this.setVehicleMarkers();
 
     let bounds = leaflet.latLngBounds(this.vehiclesCoords);
-    this.map.fitBounds(bounds, { maxZoom: 16 });
+    this.map.fitBounds(bounds, { maxZoom: 16, padding: [2, 2] });
   }
 
   recenterMap() {
     let bounds = leaflet.latLngBounds(this.vehiclesCoords);
-    this.map.fitBounds(bounds, { maxZoom: 16 });
+    this.map.fitBounds(bounds, { maxZoom: 16, padding: [2, 2] });
   }
 
   centerOnSelectedVehicle() {
     if (this.selectedVehicle) {
-      this.map.setView(leaflet.latLng(this.selectedVehicle?.latitude!, this.selectedVehicle?.longitude!), 16);
+      this.map.setView([this.selectedVehicle?.latitude!, this.selectedVehicle?.longitude!], 16);
     }
   }
 
   private setVehicleMarkers() {
+    this.markers.forEach(m => this.map.removeLayer(m));
+    this.markers = [];
+    this.vehiclesCoords = [];
+
     this.orderByUserProximity();
 
     for (let v of this.vehicles) {
@@ -94,13 +129,16 @@ export class Home implements OnInit {
 
       marker.on('dblclick', (e) => {
         this.map.setView(latLong, 16);
+        this.selectedVehicle = v;
         (e.target as L.Marker).openPopup();
       });
 
       marker.on('click', () => {
+        this.selectedVehicle = v;
         popup.setLatLng(marker.getLatLng()).openOn(this.map);
       });
 
+      this.markers.push(marker);
       this.vehiclesCoords.push([v.latitude, v.longitude]);
     }
   }

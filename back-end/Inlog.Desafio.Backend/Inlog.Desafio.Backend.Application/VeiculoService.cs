@@ -1,35 +1,49 @@
-﻿using Inlog.Desafio.Backend.Domain.Models;
+﻿using Amazon.Runtime.Internal.Endpoints.StandardLibrary;
+using Amazon.S3.Model;
+using Inlog.Desafio.Backend.Domain.Models;
 using Inlog.Desafio.Backend.Domain.RequestModels;
 using Inlog.Desafio.Backend.Infra.Database.Repositories;
+using Microsoft.Extensions.Configuration;
+using System.Security.AccessControl;
 
 namespace Inlog.Desafio.Backend.Application
 {
     public class VeiculoService
     {
         private VeiculoRepository _repository;
+        private S3Service _s3Service;
+        private IConfiguration _config;
 
-        public VeiculoService(VeiculoRepository repository)
+        public VeiculoService(VeiculoRepository repository, S3Service s3Service, IConfiguration config)
         {
+            _config = config;
             _repository = repository;
+            _s3Service = s3Service;
         }
 
-        public async Task AddVeiculo(InsertVeiculoRequest veiculoRequest, string webRoot, string url)
+        public async Task AddVeiculo(InsertVeiculoRequest veiculoRequest)
         {
-            if (!string.IsNullOrEmpty(veiculoRequest.ImageBase64))
+            if (!string.IsNullOrWhiteSpace(veiculoRequest.ImageBase64))
             {
-                byte[] imageBytes = Convert.FromBase64String(veiculoRequest.ImageBase64);
+                var bucketUrl = _config["MinioUrl"];
+                var bucketName = _config["MinioBucketName"];
 
-                var folder = Path.Combine(webRoot, "images");
-                if (!Directory.Exists(folder))
-                    Directory.CreateDirectory(folder);
+                using var stream = new MemoryStream(Convert.FromBase64String(veiculoRequest.ImageBase64));
 
-                var fileName = veiculoRequest.Placa + ".png";
-                var filePath = Path.Combine(folder, fileName);
+                var putRequest = new PutObjectRequest
+                {
+                    BucketName = bucketName,
+                    Key = veiculoRequest.Placa,
+                    InputStream = stream,
+                    ContentType = "image/png"
+                };
 
-                await File.WriteAllBytesAsync(filePath, imageBytes);
-            }
+                await _s3Service.UploadImageAsync(putRequest);
 
-            veiculoRequest.ImageUrl = url;
+                var url = $"{bucketUrl}/{bucketName}/{veiculoRequest.Placa}";
+
+                veiculoRequest.ImageUrl = url;
+            }            
 
             await _repository.Insert(veiculoRequest.ToModel());
         }
@@ -37,6 +51,11 @@ namespace Inlog.Desafio.Backend.Application
         public async Task<List<Veiculo>> ReadAllVeiculos()
         {
             return await _repository.ReadAll();
+        }
+
+        public async Task DeleteVeiculo(int id)
+        {
+            await _repository.DeleteById(id);
         }
     }
 }

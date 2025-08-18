@@ -13,14 +13,10 @@ public class VeiculoController : ControllerBase
 
     private readonly ILogger<VeiculoController> _logger;
 
-    private readonly IWebHostEnvironment _env;
-
     public VeiculoController(ILogger<VeiculoController> logger, VeiculoService service, IWebHostEnvironment env)
     {
         _logger = logger;
         _service = service;
-        _env = env;
-        _env.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
 
     }
 
@@ -29,9 +25,7 @@ public class VeiculoController : ControllerBase
     {
         try
         {
-            var url = $"{Request.Scheme}://{Request.Host}/images/{veiculo.Placa}.png";
-
-            await _service.AddVeiculo(veiculo, _env.WebRootPath, url);
+            await _service.AddVeiculo(veiculo);
 
             return Ok(veiculo);
         }
@@ -49,6 +43,21 @@ public class VeiculoController : ControllerBase
             var veiculos = await _service.ReadAllVeiculos();
 
             return Ok(veiculos);
+        }
+        catch (Exception ex)
+        {
+            return Problem(ex.Message);
+        }
+    }
+
+    [HttpDelete("Delete/{id}")]
+    public async Task<ActionResult> DeleteVeiculoAsync(int id)
+    {
+        try
+        {
+            await _service.DeleteVeiculo(id);
+
+            return Ok();
         }
         catch (Exception ex)
         {

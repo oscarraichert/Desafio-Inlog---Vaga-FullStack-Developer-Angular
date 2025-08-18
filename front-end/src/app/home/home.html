@@ -1,13 +1,15 @@
 <div id="home-layout">
-    <div>
+    <div id="vehicle-list">
         <h1>Veículos</h1>
 
         <nav>
             <a routerLink="/adicionar-veiculo">Adicionar Veículo</a>
         </nav>
 
+        <input type="text" placeholder="Pesquisar veículo..." [formControl]="searchControl" />
+
         <ul>
-            @for (v of vehicles; track v.id) {
+            @for (v of filteredVehicles; track v.id) {
             <li (click)="selectVehicle(v)" [class.selected]="v === selectedVehicle">{{
                 vehicleType[v.tipoVeiculo] }} #{{ v.id }} Placa: {{ v.placa }} Cor: {{ v.cor }}</li>
             } @empty {
@@ -20,22 +22,29 @@
         <div id="map"></div>
         <div id="map-buttons">
             <button id="default-button" (click)="recenterMap()">Recentralizar</button>
-            <button id="default-button" (click)="centerOnSelectedVehicle()">Localizar Veículo</button>
+            <button id="default-button" [disabled]="selectedVehicle == null" (click)="centerOnSelectedVehicle()">Zoom no
+                Veículo</button>
         </div>
     </div>
 
     @if (selectedVehicle) {
     <div id="vehicle-menu">
         <h1>Detalhes</h1>
+
         <p><strong>ID:</strong> {{ selectedVehicle.id }}</p>
         <p><strong>Tipo:</strong> {{ vehicleType[selectedVehicle.tipoVeiculo] }}</p>
         <p><strong>Placa:</strong> {{ selectedVehicle.placa }}</p>
         <p><strong>Cor:</strong> {{ selectedVehicle.cor }}</p>
         <p><strong>Chassi:</strong> {{ selectedVehicle.chassi }}</p>
+
         @if (selectedVehicle.imageUrl) {
         <img [src]="selectedVehicle.imageUrl" alt="vehicle image" />
         }
-        <button id="default-button" (click)="deselectVehicle()">Fechar</button>
+
+        <div id="buttons">
+            <button id="default-button" (click)="deselectVehicle()">Fechar</button>
+            <button id="delete-button" (click)="deleteVehicle()">Excluir</button>
+        </div>
     </div>
     }
 </div>
