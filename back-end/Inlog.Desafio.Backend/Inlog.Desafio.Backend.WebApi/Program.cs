@@ -15,7 +15,7 @@ builder.Services.AddScoped<IVeiculoRepository ,VeiculoRepository>();
 builder.Services.AddScoped<VeiculoService>();
 builder.Services.AddScoped<S3Service>();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration["DEFAULT_CONNECTION"];
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
 var app = builder.Build();
@@ -33,7 +33,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

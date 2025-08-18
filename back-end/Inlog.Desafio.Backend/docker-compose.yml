@@ -1,0 +1,70 @@
+services:
+  inlog.desafio.backend.webapi:
+    build:
+      context: .
+      dockerfile: Inlog.Desafio.Backend.WebApi/Dockerfile
+    environment:
+      - DEFAULT_CONNECTION=Host=postgres;Port=5432;Username=postgres;Password=postgres;Database=desafio-inlog
+      - MINIO_BUCKET_NAME=inlog
+      - MINIO_USERNAME=minioadmin
+      - MINIO_SECRET=minioadmin
+      - MINIO_URL=http://localhost:9000
+      - MINIO_CONTAINER=http://minio:9000
+      - ASPNETCORE_URLS=http://+:80
+    networks:
+      - default
+    depends_on:
+      - postgres
+      - minio
+    ports:
+      - "80:80"
+  
+  minio:
+    image: minio/minio
+    container_name: minio
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/ready"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - default
+    depends_on:
+      - postgres
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set myminio http://minio:9000 minioadmin minioadmin &&
+      mc mb --ignore-existing myminio/inlog &&
+      mc anonymous set public myminio/inlog &&
+      exit 0;
+      "
+  
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=desafio-inlog
+    ports:
+      - "5432:5432"
+    networks:
+      - default
+    volumes:
+      - ./init-db:/docker-entrypoint-initdb.d
+
+networks:
+  default:
+    driver: bridge

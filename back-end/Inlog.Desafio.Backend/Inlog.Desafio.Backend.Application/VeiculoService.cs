@@ -25,8 +25,8 @@ namespace Inlog.Desafio.Backend.Application
         {
             if (!string.IsNullOrWhiteSpace(veiculoRequest.ImageBase64))
             {
-                var bucketUrl = _config["MinioUrl"];
-                var bucketName = _config["MinioBucketName"];
+                var bucketUrl = _config["MINIO_URL"];
+                var bucketName = _config["MINIO_BUCKET_NAME"];
 
                 using var stream = new MemoryStream(Convert.FromBase64String(veiculoRequest.ImageBase64));
 

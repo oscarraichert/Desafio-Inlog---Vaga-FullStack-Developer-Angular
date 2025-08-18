@@ -14,11 +14,10 @@ namespace Inlog.Desafio.Backend.Application
         }
 
         public S3Service(IConfiguration config)
-        {
-            
-            var minioUrl = config["MinioUrl"];
-            var minioUsername = config["MinioUsername"];
-            var minioSecret = config["MinioSecret"];
+        {            
+            var minioUrl = config["MINIO_CONTAINER"];
+            var minioUsername = config["MINIO_USERNAME"];
+            var minioSecret = config["MINIO_SECRET"];
             _s3Client = new AmazonS3Client(
                 minioUsername,
                 minioSecret,
