@@ -51,7 +51,19 @@ services:
       mc anonymous set public myminio/inlog &&
       exit 0;
       "
-  
+
+  frontend:
+    build:
+      context: ../../front-end
+      dockerfile: Dockerfile
+    container_name: frontend
+    depends_on:
+      - inlog.desafio.backend.webapi
+    ports:
+      - "4200:4200"
+    networks:
+      - default
+
   postgres:
     image: postgres:16-alpine
     environment:
